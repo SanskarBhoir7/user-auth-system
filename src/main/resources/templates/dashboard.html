@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - User Auth System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --primary-color: #667eea;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --card-bg: rgba(30, 30, 46, 0.95);
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: var(--bg-gradient);
+            padding: 20px;
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .user-details h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .role-badge.admin {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .role-badge.user {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn,
+        .logout-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .icon-btn:hover,
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 87, 108, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .search-filters {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-filters input,
+        .search-filters select {
+            padding: 10px 14px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .search-filters input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .content-header {
+            margin-bottom: 24px;
+        }
+
+        .content-header h3 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .content-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        thead th {
+            padding: 16px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+
+        thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        tbody td {
+            padding: 16px;
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.suspended {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.disabled {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            margin: 0 4px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .suspend-btn {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .activate-btn {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .message {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            display: block;
+        }
+
+        .message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+            display: block;
+        }
+
+        .loading-overlay {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">?</div>
+                <div class="user-details">
+                    <h2 id="currentUsername">Loading...</h2>
+                    <span class="role-badge" id="currentUserRole">USER</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div id="statsSection" class="stats-grid" style="display: none;"></div>
+
+        <div class="search-filters">
+            <input type="text" id="searchInput" placeholder="Search users..." onkeyup="handleSearch()">
+            <select id="roleFilter" onchange="handleSearch()">
+                <option value="">All Roles</option>
+                <option value="USER">USER</option>
+                <option value="ADMIN">ADMIN</option>
+            </select>
+            <select id="statusFilter" onchange="handleSearch()">
+                <option value="">All Status</option>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+                <option value="DISABLED">DISABLED</option>
+            </select>
+        </div>
+
+        <div class="content-card">
+            <div class="content-header">
+                <h3>User Management</h3>
+                <p>View and manage all registered users</p>
+            </div>
+
+            <div id="message" class="message"></div>
+            <div id="tableContainer">
+                <div class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p>Loading users...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = {};
+        let searchTimeout;
+
+        window.onload = function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login';
+                return;
+            }
+
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                currentUser = {
+                    username: payload.sub,
+                    role: payload.role
+                };
+
+                document.getElementById('currentUsername').textContent = currentUser.username;
+                document.getElementById('currentUserRole').textContent = currentUser.role;
+                document.getElementById('currentUserRole').className = `role-badge ${currentUser.role.toLowerCase()}`;
+                document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+
+                loadTheme();
+                if (currentUser.role === 'ADMIN') {
+                    loadStatistics();
+                }
+            } catch (e) {
+                console.error('Failed to decode token', e);
+            }
+
+            loadUsers();
+        };
+
+        function loadTheme() {
+            const token = localStorage.getItem('token');
+            fetch('http://localhost:8080/api/profile', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+                .then(res => res.json())
+                .then(profile => {
+                    if (profile.theme === 'DARK') {
+                        document.body.setAttribute('data-theme', 'dark');
+                    }
+                })
+                .catch(err => console.error('Failed to load theme', err));
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'LIGHT' : 'DARK';
+
+            document.body.setAttribute('data-theme', newTheme.toLowerCase());
+
+            const token = localStorage.getItem('token');
+            fetch('http://localhost:8080/api/profile/theme', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ theme: newTheme })
+            })
+                .then(() => showMessage('Theme updated', 'success'))
+                .catch(() => showMessage('Failed to save theme', 'error'));
+        }
+
+        function loadStatistics() {
+            const token = localStorage.getItem('token');
+            fetch('http://localhost:8080/api/statistics', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+                .then(res => res.json())
+                .then(stats => {
+                    const statsSection = document.getElementById('statsSection');
+                    statsSection.style.display = 'grid';
+                    statsSection.innerHTML = `
+                    <div class="stat-card">
+                        <h3>Total Users</h3>
+                        <div class="value">${stats.totalUsers}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Users</h3>
+                        <div class="value">${stats.activeUsers}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>New This Week</h3>
+                        <div class="value">${stats.usersThisWeek}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Verified Emails</h3>
+                        <div class="value">${stats.verifiedUsers}</div>
+                    </div>
+                `;
+                });
+        }
+
+        function handleSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => loadUsers(), 300);
+        }
+
+        async function loadUsers() {
+            const token = localStorage.getItem('token');
+            const search = document.getElementById('searchInput').value;
+            const role = document.getElementById('roleFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (role) params.append('role', role);
+            if (status) params.append('status', status);
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/users?${params}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    showMessage('Session expired. Please login again.', 'error');
+                    setTimeout(() => window.location.href = 'login', 2000);
+                    return;
+                }
+
+                const data = await response.json();
+                displayUsers(data.users);
+            } catch (error) {
+                showMessage('Failed to load users', 'error');
+                document.getElementById('tableContainer').innerHTML = '<p>Failed to load users</p>';
+            }
+        }
+
+        function displayUsers(users) {
+            const tableContainer = document.getElementById('tableContainer');
+
+            if (!users || users.length === 0) {
+                tableContainer.innerHTML = '<p style="padding: 40px; text-align: center;">No users found</p>';
+                return;
+            }
+
+            const isAdmin = currentUser.role === 'ADMIN';
+
+            tableContainer.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            ${isAdmin ? '<th>Actions</th>' : ''}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(user => `
+                            <tr>
+                                <td>${user.id}</td>
+                                <td>${user.username}</td>
+                                <td>${user.email}</td>
+                                <td><span class="role-badge ${user.role.toLowerCase()}">${user.role}</span></td>
+                                <td><span class="status-badge ${user.accountStatus.toLowerCase()}">${user.accountStatus}</span></td>
+                                ${isAdmin ? `
+                                    <td>
+                                        ${user.accountStatus === 'ACTIVE' ?
+                        `<button class="action-btn suspend-btn" onclick="updateStatus(${user.id}, 'SUSPENDED')">Suspend</button>` :
+                        `<button class="action-btn activate-btn" onclick="updateStatus(${user.id}, 'ACTIVE')">Activate</button>`
+                    }
+                                        <button class="action-btn delete-btn" onclick="deleteUser(${user.id}, '${user.username}')" 
+                                            ${user.username === currentUser.username ? 'disabled' : ''}>Delete</button>
+                                    </td>
+                                ` : ''}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function updateStatus(userId, newStatus) {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/users/${userId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (response.ok) {
+                    showMessage(`User status updated to ${newStatus}`, 'success');
+                    loadUsers();
+                } else {
+                    showMessage('Failed to update status', 'error');
+                }
+            } catch (error) {
+                showMessage('Error updating status', 'error');
+            }
+        }
+
+        async function deleteUser(userId, username) {
+            if (!confirm(`Are you sure you want to delete user "${username}"?`)) {
+                return;
+            }
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    showMessage(`User "${username}" deleted successfully`, 'success');
+                    loadUsers();
+                } else {
+                    showMessage('Failed to delete user', 'error');
+                }
+            } catch (error) {
+                showMessage('Error deleting user', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            showMessage('Logged out successfully', 'success');
+            setTimeout(() => window.location.href = 'login', 1000);
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
