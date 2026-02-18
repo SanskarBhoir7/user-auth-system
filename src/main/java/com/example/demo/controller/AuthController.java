@@ -201,7 +201,8 @@ public class AuthController {
 
                         return ResponseEntity.ok("Password reset link has been sent to your email");
                     } catch (Exception e) {
-                        return ResponseEntity.status(500).body("Failed to send reset email");
+                        e.printStackTrace();
+                        return ResponseEntity.status(500).body("Failed to send reset email: " + e.getMessage());
                     }
                 })
                 .orElse(ResponseEntity.ok("If that email exists, a reset link has been sent"));

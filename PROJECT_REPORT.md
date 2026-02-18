@@ -76,7 +76,7 @@ These statistics are displayed as animated stat cards on the dashboard home view
 Authenticated users can manage their own profiles through the `/api/profile` endpoints:
 - **View profile** — retrieve username, email, role, account status, email verification status, theme preference, registration date, and last login timestamp.
 - **Update profile** — change username or email (with duplicate-check validation; changing email resets verification status).
-- **Change password** — requires current password verification before accepting a new password (minimum 6 characters).
+- **Change password** — requires current password verification before accepting a new password (minimum 6 characters). This feature is accessible directly from the dashboard's Settings view, allowing all authenticated users to update their password without leaving the dashboard.
 - **Theme preference** — switch between DARK and LIGHT themes, persisted server-side and applied on page load.
 
 ### 11. Frontend Redesign
@@ -90,14 +90,15 @@ The entire frontend was redesigned from a basic gradient-and-centered-form layou
 - **Inter-page navigation**: "Forgot password?" link on login, "Create account" link on login/reset, "Sign in" link on register/forgot-password pages.
 
 #### Dashboard Page
-- **Sidebar navigation layout** with branding header, nav links (Dashboard, Users, Audit Logs), and a user profile card showing the current user's avatar, username, and role badge.
-- **Three distinct views** accessible via sidebar navigation:
-  - **Dashboard view**: Welcome banner, animated stat cards (admin only), and quick-action cards for navigating to other views.
+- **Sidebar navigation layout** with branding header, nav links (Dashboard, Users, Settings, Audit Logs), and a user profile card showing the current user's avatar, username, and role badge.
+- **Four distinct views** accessible via sidebar navigation:
+  - **Dashboard view**: Welcome banner, animated stat cards (admin only), and quick-action cards for navigating to other views including Change Password.
   - **Users view**: Search bar, role/status filter dropdowns, and a full user management table with role and status badges, and admin action buttons (Suspend/Activate/Delete).
+  - **Settings view** (all users): Change password form with current password verification, new password input (minimum 6 characters), confirm password field with real-time match indicator, and success/error feedback with toast notifications.
   - **Audit Logs view** (admin only): Table of recent system events with color-coded action badges, timestamps, user references, details, and IP addresses.
 - **Smooth view switching**: Sidebar highlights the active view, page title updates dynamically, and each view fades in with a CSS animation.
 - **Theme toggle**: Dark/light mode switch in the top bar, with preference persisted server-side.
-- **Toast notifications**: Non-intrusive feedback messages for all user actions (status updates, deletions, theme changes, errors).
+- **Toast notifications**: Non-intrusive feedback messages for all user actions (status updates, deletions, password changes, theme changes, errors).
 - **Responsive design**: Sidebar collapses on smaller screens.
 
 ### 12. Security Configuration
@@ -256,7 +257,7 @@ user-auth-system/
 │       ├── register.html                       # Registration page (indigo accent)
 │       ├── forgot-password.html                # Forgot password page (teal accent)
 │       ├── reset-password.html                 # Reset password page (amber accent)
-│       └── dashboard.html                      # Admin dashboard (sidebar + 3 views)
+│       └── dashboard.html                      # Dashboard (sidebar + 4 views incl. Settings)
 └── pom.xml                                     # Maven dependencies
 ```
 
@@ -312,7 +313,8 @@ Every security-relevant action is logged with timestamps, IP addresses, and user
 ### 5. Modern, Professional Frontend
 The redesigned frontend provides a premium, polished user experience:
 - Split-screen authentication pages with animated branding panels.
-- Functional dashboard with sidebar navigation and three distinct views.
+- Functional dashboard with sidebar navigation and four distinct views (Dashboard, Users, Settings, Audit Logs).
+- In-dashboard password change via the Settings view, accessible to all authenticated users.
 - Dark/light theme toggle with server-side persistence.
 - Responsive layouts that work across screen sizes.
 
@@ -351,15 +353,17 @@ All 14 API endpoints return correct HTTP status codes and response payloads:
 
 - **Figure 7:** Audit Logs view — chronological table of system events with color-coded action badges (login, register, reset, verify, fail)
 
-- **Figure 8:** MySQL database — `users` table showing stored records with BCrypt-hashed passwords, roles, and account statuses
+- **Figure 8:** Settings view — Change Password form with current password, new password, confirm password fields, and real-time match indicator
 
-- **Figure 9:** MySQL database — `audit_logs` table showing tracked actions with timestamps and IP addresses
+- **Figure 9:** MySQL database — `users` table showing stored records with BCrypt-hashed passwords, roles, and account statuses
 
-- **Figure 10:** Postman — Login API returning JWT token (HTTP 200 OK)
+- **Figure 10:** MySQL database — `audit_logs` table showing tracked actions with timestamps and IP addresses
 
-- **Figure 11:** Postman — Registration API creating new user (HTTP 200 OK)
+- **Figure 11:** Postman — Login API returning JWT token (HTTP 200 OK)
 
-- **Figure 12:** Spring Boot project structure showing layered architecture with controllers, services, repositories, models, DTOs, and security components
+- **Figure 12:** Postman — Registration API creating new user (HTTP 200 OK)
+
+- **Figure 13:** Spring Boot project structure showing layered architecture with controllers, services, repositories, models, DTOs, and security components
 
 ---
 

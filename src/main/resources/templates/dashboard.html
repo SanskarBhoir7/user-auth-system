@@ -34,6 +34,7 @@
             --amber: #f59e0b;
             --danger: #f43f5e;
             --success: #10b981;
+            --bg-input: #0f172a;
         }
 
         [data-theme="light"] {
@@ -797,6 +798,9 @@
             <a class="nav-item" href="#" data-view="users" onclick="switchView('users');return false;">
                 <span class="nav-icon">👥</span> Users
             </a>
+            <a class="nav-item" href="#" data-view="settings" onclick="switchView('settings');return false;">
+                <span class="nav-icon">⚙️</span> Settings
+            </a>
 
             <div class="nav-label" id="adminNavLabel" style="display:none;">Admin</div>
             <a class="nav-item" href="#" id="navAudit" data-view="audit" style="display:none;"
@@ -846,6 +850,11 @@
                     <h4>Audit Logs</h4>
                     <p>Review login attempts, registrations, and system events</p>
                 </div>
+                <div class="quick-action-card" onclick="switchView('settings')">
+                    <div class="qa-icon">⚙️</div>
+                    <h4>Change Password</h4>
+                    <p>Update your account password securely</p>
+                </div>
             </div>
         </div>
 
@@ -893,6 +902,58 @@
                         <div class="spinner"></div>
                         <p>Loading audit logs...</p>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ──── VIEW: SETTINGS ──── -->
+        <div id="view-settings" class="view-section">
+            <div class="table-card">
+                <div class="card-header">
+                    <h3>Change Password</h3>
+                    <p>Update your account password. You'll need to enter your current password for verification.</p>
+                </div>
+                <div style="padding: 32px;">
+                    <form id="changePasswordForm" onsubmit="handleChangePassword(event)" style="max-width: 440px;">
+                        <div style="margin-bottom: 20px;">
+                            <label
+                                style="display:block; font-size:13px; font-weight:500; color:var(--text-muted); margin-bottom:8px;">Current
+                                Password</label>
+                            <input type="password" id="cpCurrentPassword" placeholder="Enter current password" required
+                                style="width:100%; padding:12px 14px; background:var(--bg-input); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-size:14px; font-family:inherit; transition:border-color 0.3s;"
+                                onfocus="this.style.borderColor='var(--accent)'"
+                                onblur="this.style.borderColor='var(--border)'">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label
+                                style="display:block; font-size:13px; font-weight:500; color:var(--text-muted); margin-bottom:8px;">New
+                                Password</label>
+                            <input type="password" id="cpNewPassword"
+                                placeholder="Enter new password (min 6 characters)" required minlength="6"
+                                style="width:100%; padding:12px 14px; background:var(--bg-input); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-size:14px; font-family:inherit; transition:border-color 0.3s;"
+                                onfocus="this.style.borderColor='var(--accent)'"
+                                onblur="this.style.borderColor='var(--border)'" oninput="checkNewPasswords()">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label
+                                style="display:block; font-size:13px; font-weight:500; color:var(--text-muted); margin-bottom:8px;">Confirm
+                                New Password</label>
+                            <input type="password" id="cpConfirmPassword" placeholder="Confirm new password" required
+                                style="width:100%; padding:12px 14px; background:var(--bg-input); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-size:14px; font-family:inherit; transition:border-color 0.3s;"
+                                onfocus="this.style.borderColor='var(--accent)'"
+                                onblur="this.style.borderColor='var(--border)'" oninput="checkNewPasswords()">
+                            <div id="cpMatchIndicator" style="font-size:12px; margin-top:6px; display:none;"></div>
+                        </div>
+                        <div id="cpMessage"
+                            style="padding:10px 14px; border-radius:8px; margin-bottom:16px; font-size:13px; display:none;">
+                        </div>
+                        <button type="submit" id="cpSubmitBtn"
+                            style="padding:12px 28px; background:linear-gradient(135deg, var(--accent), #0d9488); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; font-family:'Space Grotesk',sans-serif; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s;"
+                            onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(20,184,166,0.3)'"
+                            onmouseout="this.style.transform='';this.style.boxShadow=''">
+                            Update Password
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -948,7 +1009,7 @@
             if (activeNav) activeNav.classList.add('active');
 
             // Update page title
-            const titles = { dashboard: 'Dashboard', users: 'Users', audit: 'Audit Logs' };
+            const titles = { dashboard: 'Dashboard', users: 'Users', audit: 'Audit Logs', settings: 'Settings' };
             document.getElementById('pageTitle').textContent = titles[viewName] || 'Dashboard';
 
             // Load data for the view
@@ -1180,6 +1241,95 @@
                         </tr>`).join('')}
                     </tbody>
                 </table>`;
+        }
+
+        /* ═══════ CHANGE PASSWORD ═══════ */
+        function checkNewPasswords() {
+            const newPw = document.getElementById('cpNewPassword').value;
+            const confirmPw = document.getElementById('cpConfirmPassword').value;
+            const indicator = document.getElementById('cpMatchIndicator');
+
+            if (!confirmPw) { indicator.style.display = 'none'; return; }
+
+            indicator.style.display = 'block';
+            if (newPw === confirmPw) {
+                indicator.textContent = '✓ Passwords match';
+                indicator.style.color = '#6ee7b7';
+            } else {
+                indicator.textContent = '✗ Passwords do not match';
+                indicator.style.color = '#fda4af';
+            }
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('cpCurrentPassword').value;
+            const newPassword = document.getElementById('cpNewPassword').value;
+            const confirmPassword = document.getElementById('cpConfirmPassword').value;
+            const msgDiv = document.getElementById('cpMessage');
+            const btn = document.getElementById('cpSubmitBtn');
+
+            // Validation
+            if (newPassword !== confirmPassword) {
+                msgDiv.style.display = 'block';
+                msgDiv.style.background = 'rgba(244,63,94,0.1)';
+                msgDiv.style.color = '#fda4af';
+                msgDiv.textContent = 'New passwords do not match';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                msgDiv.style.display = 'block';
+                msgDiv.style.background = 'rgba(244,63,94,0.1)';
+                msgDiv.style.color = '#fda4af';
+                msgDiv.textContent = 'New password must be at least 6 characters';
+                return;
+            }
+
+            btn.textContent = 'Updating...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch('http://localhost:8080/api/profile/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                const data = await res.text();
+
+                if (res.ok) {
+                    msgDiv.style.display = 'block';
+                    msgDiv.style.background = 'rgba(20,184,166,0.1)';
+                    msgDiv.style.color = '#5eead4';
+                    msgDiv.textContent = 'Password changed successfully!';
+                    showToast('Password updated successfully', 'success');
+
+                    // Reset form
+                    document.getElementById('changePasswordForm').reset();
+                    document.getElementById('cpMatchIndicator').style.display = 'none';
+                } else {
+                    msgDiv.style.display = 'block';
+                    msgDiv.style.background = 'rgba(244,63,94,0.1)';
+                    msgDiv.style.color = '#fda4af';
+                    msgDiv.textContent = data || 'Failed to change password';
+                }
+            } catch (error) {
+                msgDiv.style.display = 'block';
+                msgDiv.style.background = 'rgba(244,63,94,0.1)';
+                msgDiv.style.color = '#fda4af';
+                msgDiv.textContent = 'Error connecting to the server';
+            }
+
+            btn.textContent = 'Update Password';
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
         }
 
         /* ═══════ UTILITIES ═══════ */
