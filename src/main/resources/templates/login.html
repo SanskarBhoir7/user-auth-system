@@ -7,39 +7,204 @@
     <title>Login - User Auth System</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <style>
-        * {
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --border: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #14b8a6;
+            --accent-glow: rgba(20, 184, 166, 0.15);
+            --danger: #f43f5e;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            background: var(--bg-dark);
+            color: var(--text);
+            display: flex;
+        }
+
+        /* ───── LEFT BRANDING PANEL ───── */
+        .brand-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(20, 184, 166, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+                var(--bg-dark);
+        }
+
+        /* Dot grid pattern */
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.08) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        /* Floating geometric shapes */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.07;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            top: -80px;
+            left: -60px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: #6366f1;
+            bottom: -40px;
+            right: -30px;
+            animation-delay: -7s;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: #f59e0b;
+            top: 60%;
+            left: 60%;
+            animation-delay: -13s;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(20px, -30px) rotate(5deg);
+            }
+
+            66% {
+                transform: translate(-15px, 15px) rotate(-3deg);
+            }
+        }
+
+        .brand-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .brand-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--accent), #6366f1);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
+            margin: 0 auto 32px;
+            font-size: 28px;
+            box-shadow: 0 8px 32px rgba(20, 184, 166, 0.25);
         }
 
-        .container {
+        .brand-content h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .brand-content h1 span {
+            background: linear-gradient(135deg, var(--accent), #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-content p {
+            color: var(--text-muted);
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .feature-list li .icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ───── RIGHT FORM PANEL ───── */
+        .form-panel {
+            width: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+        }
+
+        .form-wrapper {
             width: 100%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-            animation: slideUp 0.5s ease-out;
+            max-width: 380px;
+            animation: fadeSlide 0.6s ease-out;
         }
 
-        @keyframes slideUp {
+        @keyframes fadeSlide {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(24px);
             }
 
             to {
@@ -48,153 +213,240 @@
             }
         }
 
-        .header {
-            padding: 40px 40px 30px;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .header h1 {
+        .form-wrapper h2 {
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
         }
 
-        .header p {
+        .form-wrapper .subtitle {
+            color: var(--text-muted);
             font-size: 14px;
-            opacity: 0.9;
+            margin-bottom: 36px;
         }
 
-        .form-container {
-            padding: 40px;
+        /* Input groups */
+        .input-group {
+            margin-bottom: 20px;
         }
 
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        label {
+        .input-group label {
             display: block;
-            margin-bottom: 8px;
+            font-size: 13px;
             font-weight: 500;
-            color: #374151;
-            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
         }
 
-        input {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+
+        .input-wrapper input {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e5e7eb;
+            padding: 14px 16px 14px 44px;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
             border-radius: 10px;
-            font-size: 15px;
+            color: var(--text);
+            font-size: 14px;
             font-family: inherit;
-            transition: all 0.3s ease;
-            background: white;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        input:focus {
+        .input-wrapper input::placeholder {
+            color: #475569;
+        }
+
+        .input-wrapper input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
-        button {
+        .input-wrapper input:focus~.input-icon {
+            color: var(--accent);
+        }
+
+        /* Submit */
+        .submit-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-top: 8px;
+            background: linear-gradient(135deg, var(--accent), #0d9488);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.3px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:hover {
+        .submit-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 24px rgba(20, 184, 166, 0.3);
         }
 
-        button:active {
+        .submit-btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        .submit-btn:active {
             transform: translateY(0);
         }
 
+        .submit-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Messages */
         .message {
             padding: 12px 16px;
             border-radius: 10px;
             margin-bottom: 20px;
-            font-size: 14px;
+            font-size: 13px;
             display: none;
+            border-left: 3px solid transparent;
         }
 
         .message.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
+            background: rgba(244, 63, 94, 0.1);
+            color: #fda4af;
+            border-left-color: var(--danger);
             display: block;
         }
 
         .message.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
+            background: rgba(20, 184, 166, 0.1);
+            color: #5eead4;
+            border-left-color: var(--accent);
             display: block;
         }
 
-        .footer {
+        /* Footer */
+        .form-footer {
             text-align: center;
-            margin-top: 24px;
+            margin-top: 28px;
             padding-top: 24px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
         }
 
-        .footer a {
-            color: #667eea;
+        .form-footer a {
+            color: var(--accent);
             text-decoration: none;
             font-weight: 500;
-            transition: opacity 0.3s;
+            transition: opacity 0.2s;
         }
 
-        .footer a:hover {
-            opacity: 0.7;
+        .form-footer a:hover {
+            opacity: 0.8;
         }
 
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
+        /* ───── RESPONSIVE ───── */
+        @media (max-width: 960px) {
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                width: 100%;
+                border-left: none;
+            }
+
+            body {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Welcome Back</h1>
-            <p>Sign in to your account</p>
+    <!-- Left Panel -->
+    <div class="brand-panel">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="brand-content">
+            <div class="brand-logo">🔐</div>
+            <h1>Welcome to <span>AuthSystem</span></h1>
+            <p>A secure, production-grade authentication platform built with Spring Boot, JWT, and role-based access
+                control.</p>
+            <ul class="feature-list">
+                <li><span class="icon">🛡️</span> BCrypt password encryption</li>
+                <li><span class="icon">🎫</span> JWT stateless sessions</li>
+                <li><span class="icon">👥</span> Role-based access control</li>
+                <li><span class="icon">📋</span> Audit logging & monitoring</li>
+            </ul>
         </div>
+    </div>
 
-        <div class="form-container">
+    <!-- Right Panel -->
+    <div class="form-panel">
+        <div class="form-wrapper">
+            <h2>Sign in</h2>
+            <p class="subtitle">Enter your credentials to access your account</p>
+
             <div id="message" class="message"></div>
 
             <form id="loginForm">
-                <div class="form-group">
+                <div class="input-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter your username" required autocomplete="username">
+                    <div class="input-wrapper">
+                        <input type="text" id="username" placeholder="Enter your username" required
+                            autocomplete="username">
+                        <span class="input-icon">👤</span>
+                    </div>
                 </div>
 
-                <div class="form-group">
+                <div class="input-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required
-                        autocomplete="current-password">
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder="Enter your password" required
+                            autocomplete="current-password">
+                        <span class="input-icon">🔒</span>
+                    </div>
                 </div>
 
-                <button type="submit">Sign In</button>
+                <div style="text-align:right;margin-bottom:16px">
+                    <a href="forgot-password"
+                        style="color:var(--accent);font-size:13px;text-decoration:none;font-weight:500;transition:opacity 0.2s">Forgot
+                        password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn">Sign In</button>
             </form>
 
-            <div class="footer">
+            <div class="form-footer">
                 Don't have an account? <a href="register">Create one</a>
             </div>
         </div>
@@ -209,7 +461,7 @@
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const button = loginForm.querySelector('button');
+            const button = loginForm.querySelector('.submit-btn');
             button.classList.add('loading');
             button.textContent = 'Signing in...';
 

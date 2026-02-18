@@ -61,7 +61,9 @@ public class SecurityConfig {
                                                                 "/",
                                                                 "/login",
                                                                 "/register",
-                                                                "/dashboard")
+                                                                "/dashboard",
+                                                                "/forgot-password",
+                                                                "/reset-password")
                                                 .permitAll()
 
                                                 // Everything else requires JWT

@@ -8,16 +8,26 @@ public class ViewController {
 
     @GetMapping("/login")
     public String login() {
-        return "login";       // login.html
+        return "login"; // login.html
     }
 
     @GetMapping("/register")
     public String register() {
-        return "register";    // register.html
+        return "register"; // register.html
     }
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "dashboard";   // dashboard.html
+        return "dashboard"; // dashboard.html
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword() {
+        return "forgot-password"; // forgot-password.html
+    }
+
+    @GetMapping("/reset-password")
+    public String resetPassword() {
+        return "reset-password"; // reset-password.html
     }
 }
